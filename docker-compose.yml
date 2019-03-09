@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/mysql_data:/var/lib/mysql
+
+  web:
+    build: . # buildに書かれているパスのDockerfileを参考にしてイメージを構築
+    command: sh -c "sleep 3; python3 manage.py runserver 0.0.0.0:8000" # dbコンテナが起動完了していないとエラーが起きるので３秒待ってみる
+    volumes:
+      - .:/home/django_template
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
